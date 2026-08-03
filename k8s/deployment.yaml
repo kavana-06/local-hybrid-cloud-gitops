@@ -4,18 +4,29 @@ metadata:
   name: system-monitor
 spec:
   replicas: 1
+
   selector:
     matchLabels:
       app: system-monitor
+
   template:
     metadata:
       labels:
         app: system-monitor
+
     spec:
       containers:
         - name: monitor
           image: kavanabt6/local-hybrid-cloud-monitor:v2
           imagePullPolicy: Always
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
 
           livenessProbe:
             exec:
