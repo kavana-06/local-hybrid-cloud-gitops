@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: monitor
-          image: kavanabt6/local-hybrid-cloud-monitor:v2
+          image: kavanabt6/local-hybrid-cloud-monitor:c3ff42c
           imagePullPolicy: Always
 
           resources:
