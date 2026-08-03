@@ -1,18 +1,45 @@
 import os
 import platform
 import shutil
+import threading
 import time
 from datetime import datetime
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import psutil
 
 
 LOG_FILE = "logs/system_monitor.log"
 CHECK_INTERVAL = 30
+HEALTH_PORT = 8080
 
 CPU_WARNING = 80
 MEMORY_WARNING = 80
 DISK_WARNING = 80
+
+
+class HealthHandler(BaseHTTPRequestHandler):
+    """Provide a simple Kubernetes health endpoint."""
+
+    def do_GET(self):
+        if self.path == "/health":
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain")
+            self.end_headers()
+            self.wfile.write(b"OK\n")
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def log_message(self, format, *args):
+        """Disable HTTP request logging."""
+        return
+
+
+def start_health_server():
+    """Start the HTTP health server."""
+    server = HTTPServer(("0.0.0.0", HEALTH_PORT), HealthHandler)
+    server.serve_forever()
 
 
 def get_system_metrics():
@@ -101,7 +128,14 @@ def save_log(output):
 
 
 def main():
-    """Continuously monitor the system."""
+    """Start health server and continuously monitor the system."""
+
+    health_thread = threading.Thread(
+        target=start_health_server,
+        daemon=True,
+    )
+    health_thread.start()
+
     while True:
         metrics = get_system_metrics()
         output = format_metrics(metrics)
@@ -114,4 +148,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
