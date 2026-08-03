@@ -1,13 +1,15 @@
 import os
 import platform
 import shutil
+import psutil
 from datetime import datetime
 
 print("=== Local Hybrid-Cloud System Monitor ===")
 print(f"Time: {datetime.now()}")
 print(f"OS: {platform.system()} {platform.release()}")
 print(f"CPU Cores: {os.cpu_count()}")
-
+cpu_usage = psutil.cpu_percent(interval=1)
+print(f"CPU Usage: {cpu_usage}%")
 total, used, free = shutil.disk_usage("/")
 
 print(f"Disk Total: {total // (1024**3)} GB")
