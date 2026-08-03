@@ -19,13 +19,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Set image tag
+        id: vars
+        run: echo "TAG=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
       - name: Build Docker image
         run: |
           docker build \
-            -t ${{ secrets.DOCKERHUB_USERNAME }}/local-hybrid-cloud-monitor:v2 \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/local-hybrid-cloud-monitor:${{ steps.vars.outputs.TAG }} \
             .
 
       - name: Push Docker image
         run: |
           docker push \
-            ${{ secrets.DOCKERHUB_USERNAME }}/local-hybrid-cloud-monitor:v2
+            ${{ secrets.DOCKERHUB_USERNAME }}/local-hybrid-cloud-monitor:${{ steps.vars.outputs.TAG }}
