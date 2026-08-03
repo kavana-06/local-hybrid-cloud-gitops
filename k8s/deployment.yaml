@@ -16,3 +16,21 @@ spec:
         - name: monitor
           image: kavanabt6/local-hybrid-cloud-monitor:v2
           imagePullPolicy: Always
+
+          livenessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "import psutil; print('healthy')"
+            initialDelaySeconds: 10
+            periodSeconds: 30
+
+          readinessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "import psutil; print('ready')"
+            initialDelaySeconds: 5
+            periodSeconds: 15
