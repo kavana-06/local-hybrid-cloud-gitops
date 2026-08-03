@@ -44,6 +44,31 @@ def get_health_status(value, threshold):
     return "OK"
 
 
+def get_alerts(metrics):
+    """Generate alerts for resources exceeding thresholds."""
+    alerts = []
+
+    if metrics["cpu_usage"] >= CPU_THRESHOLD:
+        alerts.append(
+            f"ALERT: CPU usage is {metrics['cpu_usage']}%"
+        )
+
+    if metrics["memory_usage"] >= MEMORY_THRESHOLD:
+        alerts.append(
+            f"ALERT: Memory usage is {metrics['memory_usage']}%"
+        )
+
+    if metrics["disk_usage"] >= DISK_THRESHOLD:
+        alerts.append(
+            f"ALERT: Disk usage is {metrics['disk_usage']:.1f}%"
+        )
+
+    if not alerts:
+        alerts.append("No active alerts.")
+
+    return alerts
+
+
 def format_metrics(metrics):
     """Format monitoring metrics and health status."""
     cpu_status = get_health_status(
@@ -58,7 +83,15 @@ def format_metrics(metrics):
         metrics["disk_usage"], DISK_THRESHOLD
     )
 
-    return (
+    overall_status = (
+        "WARNING"
+        if "WARNING" in (cpu_status, memory_status, disk_status)
+        else "OK"
+    )
+
+    alerts = get_alerts(metrics)
+
+    output = (
         "=== Local Hybrid-Cloud System Monitor ===\n"
         f"Time: {metrics['time']}\n"
         f"OS: {metrics['os']}\n"
@@ -72,9 +105,14 @@ def format_metrics(metrics):
         f"Memory Used: {metrics['memory_used']} GB\n"
         f"Memory Free: {metrics['memory_free']} GB\n"
         f"Memory Usage: {metrics['memory_usage']}% [{memory_status}]\n"
-        f"Overall Health: "
-        f"{'WARNING' if 'WARNING' in (cpu_status, memory_status, disk_status) else 'OK'}\n"
+        f"Overall Health: {overall_status}\n"
+        "Alerts:\n"
     )
+
+    for alert in alerts:
+        output += f"- {alert}\n"
+
+    return output
 
 
 def save_log(output):
