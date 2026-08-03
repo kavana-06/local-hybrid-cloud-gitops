@@ -1,0 +1,42 @@
+name: CI - Local Hybrid Cloud GitOps
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install psutil PyYAML
+
+      - name: Validate Python syntax
+        run: |
+          python -m py_compile app/monitor.py
+
+      - name: Validate Kubernetes YAML
+        run: |
+          python - <<'PY'
+          import yaml
+
+          with open("k8s/deployment.yaml", "r") as file:
+              yaml.safe_load(file)
+
+          print("Kubernetes YAML syntax is valid")
+          PY
