@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: system-monitor
+
 spec:
   replicas: 1
 
@@ -29,19 +30,15 @@ spec:
               memory: "256Mi"
 
           livenessProbe:
-            exec:
-              command:
-                - python
-                - -c
-                - "import psutil; print('healthy')"
+            httpGet:
+              path: /health
+              port: 8080
             initialDelaySeconds: 10
             periodSeconds: 30
 
           readinessProbe:
-            exec:
-              command:
-                - python
-                - -c
-                - "import psutil; print('ready')"
+            httpGet:
+              path: /health
+              port: 8080
             initialDelaySeconds: 5
             periodSeconds: 15
