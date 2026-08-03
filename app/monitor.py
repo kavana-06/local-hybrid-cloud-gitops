@@ -1,6 +1,7 @@
 import os
 import platform
 import shutil
+import time
 from datetime import datetime
 
 import psutil
@@ -11,6 +12,7 @@ LOG_FILE = "logs/system_monitor.log"
 CPU_THRESHOLD = 80
 MEMORY_THRESHOLD = 80
 DISK_THRESHOLD = 80
+CHECK_INTERVAL = 30
 
 
 def get_system_metrics():
@@ -125,12 +127,17 @@ def save_log(output):
 
 
 def main():
-    metrics = get_system_metrics()
-    output = format_metrics(metrics)
+    """Continuously monitor the system."""
+    while True:
+        metrics = get_system_metrics()
+        output = format_metrics(metrics)
 
-    print(output)
-    save_log(output)
+        print(output, flush=True)
+        save_log(output)
+
+        time.sleep(CHECK_INTERVAL)
 
 
 if __name__ == "__main__":
     main()
+

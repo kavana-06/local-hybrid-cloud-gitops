@@ -1,0 +1,7 @@
+services:
+  monitor:
+    build: .
+    container_name: local-hybrid-cloud-monitor
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
