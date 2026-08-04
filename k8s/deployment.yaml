@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: monitor
-          image: kavanabt6/local-hybrid-cloud-monitor:c3ff42c
+          image: kavanabt6/local-hybrid-cloud-monitor:3b66487
           imagePullPolicy: Always
 
           resources:
@@ -28,6 +28,10 @@ spec:
             limits:
               cpu: "500m"
               memory: "256Mi"
+
+          volumeMounts:
+            - name: monitor-logs
+              mountPath: /app/logs
 
           livenessProbe:
             httpGet:
@@ -42,3 +46,9 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 15
+
+      volumes:
+        - name: monitor-logs
+          persistentVolumeClaim:
+            claimName: system-monitor-logs
+
