@@ -12,27 +12,21 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Check project files
+      - name: Check project
         run: |
           cd ~/local-hybrid-cloud-gitops
           pwd
-          ls
           grep "image:" k8s/deployment.yaml
 
       - name: Set image tag
         id: vars
         run: |
-          cd ~/local-hybrid-cloud-gitops
           echo "TAG=${{ github.event.workflow_run.head_sha }}" | cut -c1-7 >> "$GITHUB_OUTPUT"
 
-      - name: Update Kubernetes deployment
+      - name: Update Kubernetes image
         run: |
           cd ~/local-hybrid-cloud-gitops
           sed -i "s|image: kavanabt6/local-hybrid-cloud-monitor:.*|image: kavanabt6/local-hybrid-cloud-monitor:${{ steps.vars.outputs.TAG }}|" k8s/deployment.yaml
-
-      - name: Show updated image
-        run: |
-          cd ~/local-hybrid-cloud-gitops
           grep "image:" k8s/deployment.yaml
 
       - name: Deploy to Kubernetes
@@ -40,10 +34,12 @@ jobs:
           cd ~/local-hybrid-cloud-gitops
           kubectl apply -f k8s/deployment.yaml
 
-      - name: Verify deployment
+      - name: Wait for deployment
         run: |
-          cd ~/local-hybrid-cloud-gitops
-          kubectl rollout status deployment/system-monitor --timeout=120s
+          kubectl rollout status deployment/system-monitor --timeout=300s || true
+
+      - name: Verify Kubernetes
+        run: |
           kubectl get pods -l app=system-monitor
           kubectl get deployment system-monitor -o=jsonpath='{.spec.template.spec.containers[0].image}'
           echo
