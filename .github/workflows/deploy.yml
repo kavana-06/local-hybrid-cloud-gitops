@@ -1,0 +1,27 @@
+name: Deploy to Kubernetes
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set image tag
+        id: vars
+        run: echo "TAG=${{ github.event.workflow_run.head_sha }}" | cut -c1-7 >> "$GITHUB_OUTPUT"
+
+      - name: Update Kubernetes deployment
+        run: |
+          sed -i "s|image: kavanabt6/local-hybrid-cloud-monitor:.*|image: kavanabt6/local-hybrid-cloud-monitor:${{ steps.vars.outputs.TAG }}|" k8s/deployment.yaml
+
+      - name: Show updated image
+        run: grep "image:" k8s/deployment.yaml
