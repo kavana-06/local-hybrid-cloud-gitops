@@ -21,7 +21,8 @@ jobs:
       - name: Set image tag
         id: vars
         run: |
-          echo "TAG=${{ github.event.workflow_run.head_sha }}" | cut -c1-7 >> "$GITHUB_OUTPUT"
+          TAG="${{ github.event.workflow_run.head_sha }}"
+          echo "TAG=${TAG:0:7}" >> "$GITHUB_OUTPUT"
 
       - name: Update Kubernetes image
         run: |
@@ -36,10 +37,11 @@ jobs:
 
       - name: Wait for deployment
         run: |
-          kubectl rollout status deployment/system-monitor --timeout=300s || true
+          kubectl rollout status deployment/system-monitor --timeout=300s
 
-      - name: Verify Kubernetes
+      - name: Verify deployment
         run: |
           kubectl get pods -l app=system-monitor
           kubectl get deployment system-monitor -o=jsonpath='{.spec.template.spec.containers[0].image}'
           echo
+
