@@ -237,6 +237,25 @@ The Kubernetes workload has been tested with:
 * Kubernetes resource monitoring
 * Pod readiness monitoring
 * Alert rule evaluation
+---
+
+## Project Screenshots
+
+### CI/CD Deployment
+
+![GitHub Actions CI/CD](screenshots/github-actions.png)
+
+### Grafana Monitoring Dashboard
+
+![Grafana Dashboard](screenshots/grafana-dashboard.png)
+
+### Prometheus Metrics
+
+![Prometheus Metrics](screenshots/prometheus-metrics.png)
+
+### Kubernetes Deployment
+
+![Kubernetes Deployment](screenshots/kubernetes-deployment.png)
 
 ---
 
