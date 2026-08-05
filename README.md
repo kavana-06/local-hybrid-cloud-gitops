@@ -245,17 +245,35 @@ The Kubernetes workload has been tested with:
 
 ![GitHub Actions CI/CD](screenshots/github-actions.png)
 
-### Grafana Monitoring Dashboard
+---
 
-![Grafana Dashboard](screenshots/grafana-dashboard.png)
+### Kubernetes Deployment
+
+![Kubernetes Deployment](screenshots/kubernetes-deployment.png)
+
+---
 
 ### Prometheus Metrics
 
 ![Prometheus Metrics](screenshots/prometheus-metrics.png)
 
-### Kubernetes Deployment
+![Prometheus Kubernetes Metrics](screenshots/prometheus-kubernetes-metrics.png)
 
-![Kubernetes Deployment](screenshots/kubernetes-deployment.png)
+![Prometheus Grafana Target](screenshots/prometheus-grafana-target.png)
+
+---
+
+### Grafana Monitoring Dashboard
+
+![Grafana Dashboard](screenshots/grafana-dashboard.png)
+
+![Grafana Dashboard - Detailed View](screenshots/grafana-dashboard-2.png)
+
+---
+
+### Alert Rules
+
+![System Monitor Alert Rules](screenshots/alert-rules.png)
 
 ---
 
